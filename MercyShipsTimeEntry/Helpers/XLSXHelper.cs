@@ -38,6 +38,16 @@ namespace MercyShipsTimeEntry
             }
             return sb.ToString().Replace("\n\n", "\n");
         }
+        public string GetCroppedExcelFile(string xlsFileName, TimeSheetPerson cropSinglePerson, string delim = "|", bool crop = true)
+        {
+            return GetCroppedExcelFile(
+                xlsFileName,
+                DateTime.Now.ToString("MMM"),
+                cropSinglePerson.Name,
+                "Total",
+                delim,
+                crop);
+        }
 
         private void LoopThroughCellValues(string cropStartWhenFindThisValue, string cropStopWhenFindThisValue, string outputDelim, bool crop, StringBuilder sb, WorkbookPart workbookPart, SheetData sheetData)
         {
@@ -73,16 +83,7 @@ namespace MercyShipsTimeEntry
             return worksheetPart.Worksheet.Elements<SheetData>().First();
         }
 
-        public string GetCroppedExcelFile(string xlsFileName, TimeSheetPerson person, bool crop=true)
-        {
-            return GetCroppedExcelFile(
-                xlsFileName, 
-                DateTime.Now.ToString("MMM"), 
-                person.Name, 
-                "Total",
-                "|",
-                crop);
-        }
+        
 
             /// <summary>
             /// Got code from: https://msdn.microsoft.com/en-us/library/office/hh298534.aspx

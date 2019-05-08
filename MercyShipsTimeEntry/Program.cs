@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using static MercyShipsTimeEntry.TimeSheetPerson;
+using System.Linq;
 
 namespace MercyShipsTimeEntry
 {
@@ -13,15 +16,23 @@ namespace MercyShipsTimeEntry
     {
         static void Main(string[] args)
         {
+            const string DELIMITER = "|";
             var xls = @"C:\Users\morrisow\OneDrive\Documents\00 Work Docs\Copy-of-471.xlsx";
             var helper = new XLSXHelper();
+            var emptyPerson = new TimeSheetPerson();
+            
+            var output = helper.GetCroppedExcelFile(xls, emptyPerson, DELIMITER, crop: false);
 
-            var Me = new TimeSheetPerson("Jacob Perkins");
-            var output = helper.GetCroppedExcelFile(xls, Me);
-            //Console.Write(output);
-
-            Me.FillValuesFromTimeSheetChunk(output);
-            Console.WriteLine(Me.ToString());
+            var people = SplitOnPerson(output, DELIMITER);
+            Console.WriteLine("people: {0}", people.Count);
+            foreach (var person in people)
+            {
+                var croppedChunk = helper.GetCroppedExcelFile(xls, person, DELIMITER, crop: true);
+                person.FillValuesFromTimeSheetChunk(croppedChunk);
+                Console.WriteLine(person.ToString());
+            }
         }
+
+        
     }
 }
